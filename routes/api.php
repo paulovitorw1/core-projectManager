@@ -17,9 +17,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
-
+    Route::post('/user/create', [AuthController::class, 'create']);
+    
     Route::group(['middleware' => 'jwt-api', 'prefix' => 'auth'], function() {
-        Route::post('/user', [AuthController::class, 'getUser']);
+        Route::get('/user', [AuthController::class, 'getUser']);
         Route::post('/logout', [AuthController::class, 'logout']);
     
     });

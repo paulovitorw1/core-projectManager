@@ -4,43 +4,56 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Helpers\Response;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterUserRulesRequest;
 use App\Interfaces\Services\AuthServiceInterface;
-use App\Http\Services\Api\V1\AuthService;
-
-use Illuminate\Http\JsonResponse;
+use App\Services\Api\V1\AuthService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    private $authService;
-    public function __construct(AuthServiceInterface $authService = new AuthService())
-    {
-        $this->authService = $authService;
-    }
-    public function getUser()
-    {
+    /**
+     * Register new user.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function create(RegisterUserRulesRequest $request, AuthService $authService) {
         try {
-            $user = $this->authService->getUser($token = "dasda");
+            $credentialsUser = $request->only(['name', 'email', 'password']);
+            $user = $authService->create($credentialsUser);
             return Response::json($user, "", 200);
         } catch (\Exception $e) {
             return Response::exception($e);
         }
     }
-    
+
+    /**
+     * Get authenticated User.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getUser(AuthService $authService)
+    {
+        try {
+            $user = $authService->getUser($token = "dasda");
+            return Response::json($user, "", 200);
+        } catch (\Exception $e) {
+            return Response::exception($e);
+        }
+    }
+
     /**
      * Get a JWT via given credentials.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(Request $request)
+    public function login(Request $request, AuthService $authService)
     {
         try {
             $credentials = $request->only(['email', 'password']);
-            $auth = $this->authService->login($credentials);
+            $auth = $authService->login($credentials);
             return Response::json($auth, "", 200);
         } catch (\Exception $e) {
-            return Response::exception($e);
+            return Response::exception($e, "", $code = 401);
         }
     }
 
@@ -49,10 +62,10 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function logout()
+    public function logout(AuthService $authService)
     {
         try {
-            $this->authService->logout();
+            $authService->logout();
             return Response::json(null, "", 204);
         } catch (\Exception $e) {
             return Response::exception($e);
