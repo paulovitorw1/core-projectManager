@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Password;
 
-class RegisterUserRulesRequest extends ApiRequest
+class LoginRulesRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,10 +22,8 @@ class RegisterUserRulesRequest extends ApiRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email',
-            'password' => 'required|string|min:6',
-            // 'password_confirmation' => 'required|string|min:6'
+            'email' => 'required|email',
+            'password' => 'required',
         ];
     }
 }

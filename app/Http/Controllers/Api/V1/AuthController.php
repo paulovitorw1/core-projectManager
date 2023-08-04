@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Helpers\Response;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRulesRequest;
 use App\Http\Requests\RegisterUserRulesRequest;
 use App\Interfaces\Services\AuthServiceInterface;
 use App\Services\Api\V1\AuthService;
@@ -20,7 +21,7 @@ class AuthController extends Controller
         try {
             $credentialsUser = $request->only(['name', 'email', 'password']);
             $user = $authService->create($credentialsUser);
-            return Response::json($user, "", 200);
+            return Response::json($user, "", 201);
         } catch (\Exception $e) {
             return Response::exception($e);
         }
@@ -46,14 +47,14 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(Request $request, AuthService $authService)
+    public function login(LoginRulesRequest $request, AuthService $authService)
     {
         try {
             $credentials = $request->only(['email', 'password']);
             $auth = $authService->login($credentials);
             return Response::json($auth, "", 200);
         } catch (\Exception $e) {
-            return Response::exception($e, "", $code = 401);
+            return Response::exception($e, "", $code = 404);
         }
     }
 

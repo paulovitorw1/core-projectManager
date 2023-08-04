@@ -4,8 +4,7 @@ namespace App\Interfaces\Services;
 
 interface AuthServiceInterface
 {
-    public function create($user);
-
+    public function create(array $user);
     public function getUser($token);
     public function login($credentials);
 
