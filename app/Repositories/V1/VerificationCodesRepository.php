@@ -15,11 +15,13 @@ class VerificationCodesRepository implements VerificationCodesRepositoryInterfac
         return $this->verificationCodeModel->createValidOTP($data['user_id'], $data['otp'], $data['expireAt']);
     }
 
-    // public function isValid(string $otp): VerificationCode {
-        
-    // }
-
-    // public function delete(string $otp): VerificationCode {
-
-    // }
+    /**
+     * Check if the is valid OTP code.
+     *
+     * @param array $data The user data for create the OTP.
+     * @return VerificationCode | null The return is VerificationCode
+     */
+    public function validateOTP($data): string {
+        return $this->verificationCodeModel->validateOTP($data);
+    }
 }

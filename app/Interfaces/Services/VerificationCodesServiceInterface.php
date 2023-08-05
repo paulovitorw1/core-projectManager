@@ -7,5 +7,5 @@ use App\Models\User;
 interface VerificationCodesServiceInterface
 {
     public function create(User $user);
-    // public function isValid(string $otp);
+    public function validateOTP(array $data);
 }

@@ -20,9 +20,9 @@ class ApiRequest extends FormRequest
      */
     protected function failedValidation(Validator $validator)
     {
-        Response::json($validator->errors(), __("Data entered not accepted in validation."), 400);
+        Response::json($validator->errors(), __("Data entered not accepted in validation."), 422);
         throw new HttpResponseException(
-            Response::json($validator->errors(), __('Data entered not accepted in validation.'), 400)
+            Response::json($validator->errors(), __('Data entered not accepted in validation.'), 422)
         );
     }
 }

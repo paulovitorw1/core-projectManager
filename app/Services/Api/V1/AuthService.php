@@ -95,6 +95,16 @@ class AuthService implements AuthServiceInterface
     }
 
     /**
+     * Validate the OTP.
+     * @param array $data contain otp for validate and userId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function validateOTP(array $data)
+    {
+        return $this->verificationCodeService->validateOTP($data);
+    }
+
+    /**
      * Get the token array structure.
      *
      * @param  string $token

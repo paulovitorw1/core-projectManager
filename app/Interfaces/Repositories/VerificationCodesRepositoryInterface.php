@@ -8,6 +8,7 @@ use App\Models\VerificationCode;
 interface VerificationCodesRepositoryInterface
 {
     public function create(array $data): VerificationCode;
+    public function validateOTP(array $data): string;
     // public function delete(string $otp): VerificationCode;
     // public function isValid(string $otp): VerificationCode;
 }

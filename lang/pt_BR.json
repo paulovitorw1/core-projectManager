@@ -129,5 +129,12 @@
   "click here to request another": "clique aqui para solicitar outro",
   "of": "de",
   "results": "resultados",
-  "to": "até"
+  "to": "até",
+
+
+  "Your account has been successfully verified.": "Sua conta foi verificada com sucesso.",
+  "The verification code is invalid.": "O código de verificação é inválido.",
+  "The verification code has expired.": "O código de verificação expirou.",
+  "The verification code has already been used.": "O código de verificação já foi usado."
+
 }

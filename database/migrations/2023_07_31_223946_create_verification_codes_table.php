@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\OTPValidationStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,7 +17,7 @@ return new class extends Migration
             $table->uuid('user_id');
             $table->string('otp');
             $table->timestamp('expire_at')->nullable();
-            $table->softDeletes();
+            $table->string('status', 20)->default(OTPValidationStatus::VALID);
             $table->timestamps();
             $table->foreign('user_id')
                 ->references('id')

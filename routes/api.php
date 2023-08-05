@@ -18,14 +18,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('v1')->group(function () {
-    Route::get('/testeEmail', function() {
-        $otp = rand(1000,9999);
-        
-        // $name = "123123";
-    
-        // // The email sending is done using the to method on the Mail facade
-        // Mail::to('paulovitor-100-@outlook.com')->send(new VerifyAccount($name));
-    });
+    Route::post('/validate/otp', [AuthController::class, 'validateOTP']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/user/create', [AuthController::class, 'create']);
     

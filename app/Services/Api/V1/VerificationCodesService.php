@@ -2,6 +2,8 @@
 
 namespace App\Services\Api\V1;
 
+use App\Enums\OTPValidationStatus;
+use App\Helpers\Response;
 use App\Interfaces\Repositories\VerificationCodesRepositoryInterface;
 use App\Interfaces\Services\OTPServiceInterface;
 use App\Interfaces\Services\VerificationCodesServiceInterface;
@@ -9,6 +11,8 @@ use App\Mail\VerifyAccount;
 use App\Models\User;
 use App\Repositories\V1\VerificationCodesRepository;
 use Illuminate\Support\Facades\Mail;
+
+use function PHPUnit\Framework\isNull;
 
 class VerificationCodesService implements VerificationCodesServiceInterface
 {
@@ -51,15 +55,30 @@ class VerificationCodesService implements VerificationCodesServiceInterface
         $this->sendVerifyEmail($user->email, $data['otp']);
     }
 
-    //TODO: [WIP] Impment validation OTP
     /**
      * Check if the is valid OTP code.
      *
-     * @param User $user The user data for create the OTP.
+     * @param array $data The user data for create the OTP.
+     * @return string
      */
-    // public function isValid(string $otp): bool
-    // {
-    // }
+    public function validateOTP(array $data)
+    {
+        return $this->repository->validateOTP($data);
+
+        // switch ($status) {
+        //     case OTPValidationStatus::VALID:
+        //         return "Codigo validado"
+        //     case OTPValidationStatus::INVALID:
+        //         throw Response::exception(null, "O código digitado é invalido", 422);
+        //         // throw new \Exception(OTPValidationStatus::INVALID, 422); 
+        //     case OTPValidationStatus::EXPIRED:
+        //         throw Response::exception(null, "O código digitado é foi expirado", 422);
+        //     case OTPValidationStatus::USED:
+        //         throw Response::exception(null, "O código digitado já foi utilizado", 422);
+        //     default:
+        //         throw Response::exception(null, "O código digitado é invalido", 422);
+        // }
+    }
 
     /**
      * Send verify email for account validate
