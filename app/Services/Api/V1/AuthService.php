@@ -42,9 +42,9 @@ class AuthService implements AuthServiceInterface
      */
     public function create(array $user)
     {
-        $user = $this->authRepository->create($user);
-        $this->verificationCodeService->create($user);
-        return $user;
+        $responseUser = $this->authRepository->create($user)->only(['id', 'email', 'name']);
+        $this->verificationCodeService->create($responseUser);
+        return $responseUser;
     }
 
     /**
@@ -102,6 +102,16 @@ class AuthService implements AuthServiceInterface
     public function validateOTP(array $data)
     {
         return $this->verificationCodeService->validateOTP($data);
+    }
+
+    /**
+     * Send email with OTP code.
+     * @param array $data contain otp for validate and userId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sendEmailWithOTP(array $data)
+    {
+        return $this->verificationCodeService->create($data);
     }
 
     /**

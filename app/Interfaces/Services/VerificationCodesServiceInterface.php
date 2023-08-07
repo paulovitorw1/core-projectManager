@@ -6,6 +6,6 @@ use App\Models\User;
 
 interface VerificationCodesServiceInterface
 {
-    public function create(User $user);
+    public function create(array $user);
     public function validateOTP(array $data);
 }

@@ -9,4 +9,8 @@ interface AuthServiceInterface
     public function login($credentials);
 
     public function logout();
+
+    public function validateOTP(array $data);
+
+    public function sendEmailWithOTP(array $data);
 }

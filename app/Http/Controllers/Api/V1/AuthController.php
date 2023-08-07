@@ -7,6 +7,7 @@ use App\Helpers\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRulesRequest;
 use App\Http\Requests\RegisterUserRulesRequest;
+use App\Http\Requests\SendEmailwithOTPRulesRequest;
 use App\Http\Requests\ValidateOTPRulesRequest;
 use App\Interfaces\Services\AuthServiceInterface;
 use App\Services\Api\V1\AuthService;
@@ -96,8 +97,24 @@ class AuthController extends Controller
                 case OTPValidationStatus::USED:
                     throw new \Exception(__('The verification code has already been used.'));
                 default:
-                throw new \Exception(__('The verification code is invalid.'));
+                    throw new \Exception(__('The verification code is invalid.'));
             }
+        } catch (\Exception $e) {
+            return Response::exception($e, $e->getMessage(), 422);
+        }
+    }
+
+    /**
+     * Send email with OTP code.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sendEmailWithOTP(SendEmailwithOTPRulesRequest $request, AuthService $authService)
+    {
+        try {
+            $data = $request->only(['id', 'email']);
+            $authService->sendEmailWithOTP($data);
+            return Response::json(null, "", 204);
         } catch (\Exception $e) {
             return Response::exception($e, $e->getMessage(), 422);
         }

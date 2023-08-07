@@ -43,16 +43,16 @@ class VerificationCodesService implements VerificationCodesServiceInterface
      *
      * @param User $user The user data for create the OTP.
      */
-    public function create(User $user)
+    public function create(array $user)
     {
         $data = [
-            'user_id' => $user->id,
+            'user_id' => $user['id'],
             'otp' => $this->otpService->generateOTP(),
             'expireAt' => now()->addMinutes(10)
         ];
 
         $this->repository->create($data);
-        $this->sendVerifyEmail($user->email, $data['otp']);
+        $this->sendVerifyEmail($user['email'], $data['otp']);
     }
 
     /**
@@ -64,20 +64,6 @@ class VerificationCodesService implements VerificationCodesServiceInterface
     public function validateOTP(array $data)
     {
         return $this->repository->validateOTP($data);
-
-        // switch ($status) {
-        //     case OTPValidationStatus::VALID:
-        //         return "Codigo validado"
-        //     case OTPValidationStatus::INVALID:
-        //         throw Response::exception(null, "O código digitado é invalido", 422);
-        //         // throw new \Exception(OTPValidationStatus::INVALID, 422); 
-        //     case OTPValidationStatus::EXPIRED:
-        //         throw Response::exception(null, "O código digitado é foi expirado", 422);
-        //     case OTPValidationStatus::USED:
-        //         throw Response::exception(null, "O código digitado já foi utilizado", 422);
-        //     default:
-        //         throw Response::exception(null, "O código digitado é invalido", 422);
-        // }
     }
 
     /**

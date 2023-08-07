@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     Route::post('/validate/otp', [AuthController::class, 'validateOTP']);
+    Route::post('/sendEmail/otp', [AuthController::class, 'sendEmailWithOTP']);
+    
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/user/create', [AuthController::class, 'create']);
     
