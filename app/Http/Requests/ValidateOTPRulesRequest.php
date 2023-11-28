@@ -23,7 +23,7 @@ class ValidateOTPRulesRequest extends ApiRequest
     {
         return [
             'otp' => 'required|string|min:6|max:6',
-            'userId' => 'required|string',
+            'email' => 'required|email',
         ];
     }
 }

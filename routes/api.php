@@ -1,9 +1,6 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
-use App\Mail\VerifyAccount;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,6 +24,5 @@ Route::prefix('v1')->group(function () {
     Route::group(['middleware' => 'jwt-api', 'prefix' => 'auth'], function() {
         Route::get('/user', [AuthController::class, 'getUser']);
         Route::post('/logout', [AuthController::class, 'logout']);
-    
     });
 });

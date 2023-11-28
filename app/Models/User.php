@@ -15,11 +15,12 @@ class User extends Authenticatable implements JWTSubject
     use HasApiTokens, HasFactory, Notifiable;
     use UUID;
     // Rest omitted for brevity
-    
+
     protected $fillable = [
         'name',
         'email',
         'password',
+        'email_verified_at'
     ];
 
     /**
@@ -42,7 +43,7 @@ class User extends Authenticatable implements JWTSubject
         'password' => 'hashed',
     ];
 
-        /**
+    /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
      * @return mixed
@@ -60,5 +61,10 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function verificationCodes()
+    {
+        return $this->hasMany(VerificationCode::class);
     }
 }

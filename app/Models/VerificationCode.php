@@ -6,7 +6,7 @@ use App\Enums\OTPValidationStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\UUID;
-
+use Carbon\Carbon;
 
 class VerificationCode extends Model
 {
@@ -24,26 +24,14 @@ class VerificationCode extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function createValidOTP(string $userId, string $otp, $expireAt)
-    {
-        $this->where('user_id', $userId)->where('expire_at', '>', now())->update(['status' => OTPValidationStatus::INVALID]);
-
-        return $this->create([
-            'user_id' => $userId,
-            'otp' => $otp,
-            'expire_at' => $expireAt,
-            'status' => OTPValidationStatus::VALID,
-        ]);
-    }
-
     public function validateOTP(array $data)
     {
-        $otpRecord = $this->where('user_id', $data['userId'])
+        $otpRecord = $this->where('user_id', $data['user_id'])
             ->where('otp', '=', $data['otp'])
             ->select('status', 'expire_at', 'id')
             ->first();
 
-        if (!$otpRecord) {
+        if (!$otpRecord || $otpRecord->status === OTPValidationStatus::INVALID) {
             return OTPValidationStatus::INVALID;
         }
 
@@ -58,13 +46,21 @@ class VerificationCode extends Model
 
         if ($otpRecord->status === OTPValidationStatus::VALID) {
             $this->updateOTPStatus($otpRecord->id, OTPValidationStatus::USED);
+            $this->updateStatusUser($data['user_id']);
         }
+        
         return OTPValidationStatus::VALID;
     }
 
-    public function updateOTPStatus(string $otpId, string $status)
+    private function updateOTPStatus(string $otpId, string $status)
     {
         $this->where('id', $otpId)
             ->update(['status' => $status]);
+    }
+
+    private function updateStatusUser(string $userId) {
+        $user = User::find($userId);
+        $user->email_verified_at = now();
+        $user->save();
     }
 }

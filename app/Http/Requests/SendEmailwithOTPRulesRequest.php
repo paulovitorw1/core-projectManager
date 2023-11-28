@@ -22,8 +22,7 @@ class SendEmailwithOTPRulesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|string',
-            'email' =>   'required|email',
+            'email' => 'required|email',
         ];
     }
 }

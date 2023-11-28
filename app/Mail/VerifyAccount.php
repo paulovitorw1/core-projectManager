@@ -41,8 +41,9 @@ class VerifyAccount extends Mailable
      */
     public function content()
     {
+        // $this->theme = "";
         return new Content(
-            view: 'Mail.verifyEmail',
+            markdown: 'emails.verifyEmail',
             with: ['code' => $this->otpCode],
         );
     }

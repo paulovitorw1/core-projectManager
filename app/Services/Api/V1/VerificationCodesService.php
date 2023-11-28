@@ -2,17 +2,15 @@
 
 namespace App\Services\Api\V1;
 
-use App\Enums\OTPValidationStatus;
-use App\Helpers\Response;
 use App\Interfaces\Repositories\VerificationCodesRepositoryInterface;
+use App\Interfaces\Repositories\AuthRepositoryInterface;
 use App\Interfaces\Services\OTPServiceInterface;
 use App\Interfaces\Services\VerificationCodesServiceInterface;
 use App\Mail\VerifyAccount;
 use App\Models\User;
+use App\Repositories\V1\AuthRepository;
 use App\Repositories\V1\VerificationCodesRepository;
 use Illuminate\Support\Facades\Mail;
-
-use function PHPUnit\Framework\isNull;
 
 class VerificationCodesService implements VerificationCodesServiceInterface
 {
@@ -25,6 +23,13 @@ class VerificationCodesService implements VerificationCodesServiceInterface
      * @var OTPServiceInterface $otpService The otpService instance to interact with generate otp code.
      */
     protected $otpService;
+
+    /**
+     * @var AuthRepositoryInterface $authRepository The AuthRepository instance to interact with the user data.
+     */
+    protected $authRepository;
+    protected $authService;
+
     /**
      * AuthManager constructor.
      *
@@ -32,10 +37,12 @@ class VerificationCodesService implements VerificationCodesServiceInterface
      */
     public function __construct(
         VerificationCodesRepositoryInterface $repository = new VerificationCodesRepository(),
-        OTPServiceInterface $otpService = new OTPService()
+        OTPServiceInterface $otpService = new OTPService(),
+        AuthRepositoryInterface $authRepository = new AuthRepository()
     ) {
         $this->repository = $repository;
         $this->otpService = $otpService;
+        $this->authRepository = $authRepository;
     }
 
     /**
@@ -45,10 +52,11 @@ class VerificationCodesService implements VerificationCodesServiceInterface
      */
     public function create(array $user)
     {
+        $user = $this->getUser($user['email']);
         $data = [
-            'user_id' => $user['id'],
+            'user_id' => $user->id,
             'otp' => $this->otpService->generateOTP(),
-            'expireAt' => now()->addMinutes(10)
+            'expire_at' => now()->addMinutes(10)
         ];
 
         $this->repository->create($data);
@@ -63,6 +71,7 @@ class VerificationCodesService implements VerificationCodesServiceInterface
      */
     public function validateOTP(array $data)
     {
+        $data['user_id'] = $this->getUser($data['email'])->id;
         return $this->repository->validateOTP($data);
     }
 
@@ -73,5 +82,15 @@ class VerificationCodesService implements VerificationCodesServiceInterface
     public function sendVerifyEmail(string $email, string $otp)
     {
         Mail::to($email)->send(new VerifyAccount($otp));
+    }
+
+    /**
+     * Get the user by email
+     *     
+     * @param string $email email user
+     */
+    public function getUser(string $email): User | null
+    {
+        return $this->authRepository->getUserByIdOrCredentials($email);
     }
 }

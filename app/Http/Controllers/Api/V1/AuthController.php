@@ -56,9 +56,10 @@ class AuthController extends Controller
         try {
             $credentials = $request->only(['email', 'password']);
             $auth = $authService->login($credentials);
+
             return Response::json($auth, "", 200);
         } catch (\Exception $e) {
-            return Response::exception($e, "", $code = 404);
+            return Response::exception($e, "", $e->getCode());
         }
     }
 
@@ -85,7 +86,7 @@ class AuthController extends Controller
     public function validateOTP(ValidateOTPRulesRequest $request, AuthService $authService)
     {
         try {
-            $data = $request->only(['otp', 'userId']);
+            $data = $request->only(['otp', 'email']);
             $validateOTP = $authService->validateOTP($data);
             switch ($validateOTP) {
                 case OTPValidationStatus::VALID:
@@ -112,7 +113,7 @@ class AuthController extends Controller
     public function sendEmailWithOTP(SendEmailwithOTPRulesRequest $request, AuthService $authService)
     {
         try {
-            $data = $request->only(['id', 'email']);
+            $data = $request->only('email');
             $authService->sendEmailWithOTP($data);
             return Response::json(null, "", 204);
         } catch (\Exception $e) {
